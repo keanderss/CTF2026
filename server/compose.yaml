@@ -1,0 +1,31 @@
+services:
+  traefik:
+    image: traefik:v3
+    restart: always
+    command:
+      - "--providers.docker=true"
+      - "--entrypoints.shell.address=:2029"
+      - "--providers.docker.exposedByDefault=false"
+      - "--log.filePath=/var/log/traefik/logs.log"
+      - "--log.format=json"
+      - "--log.level=INFO"
+      - "--log.maxAge=30"
+      - "--accesslog=true"
+      - "--accesslog.format=json"
+    ports:
+      - "2029:2029"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  script:
+    image: alpine
+    restart: always
+    build: scripts
+    read_only: true
+    deploy:
+      replicas: 5
+    labels:
+        - "traefik.enable=true"
+        - "traefik.tcp.routers.shell.entrypoints=shell"
+        - "traefik.tcp.routers.shell.rule=HostSNI(`*`)"
+        - "traefik.tcp.services.shell.loadbalancer.server.port=2029"

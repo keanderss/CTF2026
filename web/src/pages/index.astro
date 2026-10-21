@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { Image } from "astro:assets";
+import lightning1 from '../assets/gifs/lightning1.gif';
+import lightning2 from '../assets/gifs/lightning2.gif';
+import lightning3 from '../assets/gifs/lightning3.gif';
+import laughSound from '../assets/audio/evil-laugh-sound.mp3';
+import thunderSound from '../assets/audio/thunder-sound-effect_qKuOQ4S.mp3';
+import luxAeterna from '../assets/audio/lux-aeterna.mp3';
+---
+
+<!doctype html>
+<html lang="en">
+	<BaseLayout title={SITE_TITLE} description={SITE_DESCRIPTION} >
+		<div id="lightning-left" slot="left">
+			<Image class="gif my-10 hue-rotate-250 w-80 opacity-65 -z-999999" src={lightning3} alt="Lightning Flashes"/>
+			<Image class="gif my-10 hue-rotate-290 w-80 opacity-65 -z-999999" src={lightning1} alt="Lightning Flashes"/>
+		</div>
+		<div id="content" class="flex flex-col justify-evenly text-center">
+			<img id="mask" class="gif mx-auto my-10 h-1/3 w-auto opacity-65" src="/mask.gif" alt="mask"/>
+			<p>For a moment, I knew what would happen next.</p>
+			<p>Then it happened.</p>
+			<p>Except this time, I remembered it.</p>
+		</div>
+		<form id="secret-form" >
+			<input id="secret" type="password" class="text-center focus:outline-0" />
+		</form>
+		<div id="lightning-right" slot="right">
+			<Image class="gif my-10 hue-rotate-290 w-80 opacity-65 -z-999999" src={lightning3} alt="Lightning Flashes"/>
+			<Image class="gif my-10 hue-rotate-250 w-80 opacity-65 -z-999999" src={lightning2} alt="Thunder"/>
+		</div>
+	</BaseLayout>
+</html>
+
+<script is:inline define:vars={{ laughSound, thunderSound, luxAeterna }}>
+	const content = document.getElementById("content");
+	const buttons = document.getElementById("buttons");
+	const form = document.getElementById("secret-form");
+	const lightning1 = document.getElementById("lightning-left");
+	const lightning2 = document.getElementById("lightning-right");
+	const body = document.getElementById("body");
+	const laugh = new Audio(laughSound);
+	const thunder = new Audio(thunderSound);
+	const music = new Audio(luxAeterna);
+
+	form?.addEventListener("submit", async (e) => {
+		e.preventDefault();
+
+		const passwordInput = document.getElementById("secret");
+		const password = passwordInput?.value;
+
+		if (!password) {
+			return;
+		}
+
+		const response = await fetch("/authenticate", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({ password }),
+		});
+
+		if (!response.ok) {
+			return;
+		}
+
+
+		laugh.currentTime=0;
+		thunder.currentTime=0;
+		laugh.play();
+		thunder.play();
+		content?.classList.add("continued");
+		buttons?.classList.add("continued");
+		lightning1?.classList.add("continued");
+		lightning2?.classList.add("continued");
+		setTimeout(() => {
+			window.location.href="/YmFjay1jaGFubmVs";
+		}, 2500);
+	});
+	
+
+	body?.addEventListener("mouseover", () => {
+		if (music.currentTime === 0) {
+			music.play();
+			music.loop = true;
+		}
+	});
+
+	const thunderSounds = () => {
+		if (thunder.currentTime === 0) {
+			thunder.play();
+			setTimeout(() => {
+				thunder.currentTime = 0;
+			}, 10000)
+		}
+	}
+
+	lightning1?.addEventListener("mouseover", () => {
+		thunderSounds();
+	});
+
+	lightning2?.addEventListener("mouseover", () => {
+		thunderSounds();
+	});
+</script>
+
+<style>
+	#content.continued h1,
+	#content.continued p {
+		transition: opacity 1s ease;
+	}
+
+	#content.continued h1,
+	#content.continued p {
+		opacity: 0;
+	}
+
+	#content.continued img,
+	#lightning-left.continued img,
+	#lightning-right.continued img {
+		transition: transform 1s ease;
+	}
+
+	#content.continued img,
+	#lightning-left.continued img,
+	#lightning-right.continued img {
+		transform: scale(10);
+	}
+</style>

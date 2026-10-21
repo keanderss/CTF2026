@@ -1,0 +1,117 @@
+---
+import BaseHead from "../components/astro/BaseHead.astro";
+import { ClientRouter } from "astro:transitions";
+import RainLayout from "./RainLayout.astro";
+import Cursor from "#components/react/CustomCursor";
+import { Image } from 'astro:assets';
+import Magnify from "../assets/gifs/magnify.gif";
+import MatrixSkull from "../assets/gifs/matrix-skull.gif";
+import searchingSound from "../assets/audio/searching.mp3";
+
+const { title, description } = Astro.props;
+---
+
+<head>
+    <BaseHead title={title} description={description} />
+    <ClientRouter />
+</head>
+<body id="body" class="bg-black text-shadow-[0_0_3px_#000000,0px_0px_15px_#00ff00,0px_0px_9px_#56b000,0px_0px_15px_#006400,0px_0px_5px_#006400] text-white font-courier text-justify">
+	<Cursor src="/cursor.gif" xOffset={-67} yOffset={-47} client:load transition:persist/>
+    <Image id="magnify" class="fixed magnify z-1" src={Magnify} width={Magnify.width} height={Magnify.height} alt="ctf-tutorial" />
+    <div class="opacity-50">
+        <Image class="skull-rain left-0/12" style="animation-delay: 10s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-1/12" style="animation-delay: 4s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-2/12" style="animation-delay: 8s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-3/12" style="animation-delay: 1s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-4/12" style="animation-delay: 7s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-5/12" style="animation-delay: 11s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-6/12" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-7/12" style="animation-delay: 9s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-8/12" style="animation-delay: 2s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-9/12" style="animation-delay: 3s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-10/12" style="animation-delay: 6s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+        <Image class="skull-rain left-11/12" style="animation-delay: 5s;" src={MatrixSkull} width={MatrixSkull.width} height={MatrixSkull.height} alt="" />
+    </div>
+    <RainLayout>
+        <slot name="header" />
+        <main id="main" class="flex flex-row h-full justify-evenly">
+            <div class="flex flex-col justify-evenly m-auto h-auto">
+                <slot name="left" />
+            </div>
+            <div class="mx-auto w-md md:w-2xl flex flex-col justify-evenly items-center h-full" >
+                <slot />
+            </div>
+            <div class="flex flex-col justify-evenly m-auto h-auto">
+                <slot name="right" />
+            </div>
+        </main>
+    </RainLayout>
+</body>
+
+<style >
+    .skull-rain {
+        position: fixed;
+        top: calc(calc(1 / 12 * 100%) /* 8.333333% */ * -1) /* -8.333333% */;
+        animation: skull-rain 25s linear infinite;
+    }
+    @keyframes skull-rain {
+        0% {
+            transform: translateY(-110dvh) scale(0.5, 0.5);
+        }
+
+        100% {
+            transform: translateY(120dvh) scale(0.5, 0.5);
+        }
+    }
+
+    .magnify {
+        animation: search 300s ease-in-out infinite;
+    }
+    @keyframes search {
+        0%, 2%, 100% {
+            transform: translateX(80dvw) translateY(10dvh) scale(1.5, 1.5) skewX(30deg);
+        }
+
+        8%, 12% {
+            transform: translateX(50dvw) translateY(50dvh) scale(0.5, 0.5) skewY(-60deg);
+        }
+
+        18%, 22% {
+            transform: translateX(50dvw) translateY(10dvh) scale(1.5, 1.5) skewX(30deg);
+        }
+
+        28%, 32% {
+            transform: translateX(20dvw) translateY(10dvh) scale(0.5, 0.5) skewY(-0deg);
+        }
+
+        48%, 52% {
+            transform: translateX(80dvw) translateY(90dvh) scale(1.5, 1.5) skewX(-30deg);
+        }
+
+        58%, 62% {
+            transform: translateX(50dvw) translateY(50dvh) scale(10, 10) skewY(60deg);
+        }
+
+        68%, 72% {
+            transform: translateX(50dvw) translateY(80dvh) scale(1.5, 1.5) skewX(-30deg);
+        }
+
+        78%, 82% {
+            transform: translateX(10dvw) translateY(80dvh) scale(0.5, 0.5) skewY(0deg);
+        }
+    }
+</style>
+
+<script define:vars={{ searchingSound }}>
+    const magnify = document.getElementById("magnify");
+	const searching = new Audio(searchingSound);
+
+    magnify?.addEventListener("mouseover", () => {
+        if (searching.currentTime === 0) {
+			searching.play();
+			setTimeout(() => {
+				searching.currentTime = 0;
+			}, 10000)
+		}
+	});
+</script>

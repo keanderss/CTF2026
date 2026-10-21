@@ -1,0 +1,43 @@
+---
+import AboutHeroImage from '../../assets/ads/stuckinthematrix2.gif';
+import Layout from '../../layouts/Note.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+export const prerender = false;
+import { isAuthenticated } from '#lib/auth';
+
+if (!isAuthenticated(Astro.cookies.get("auth_token")?.value)) {
+    return Astro.redirect("/");
+}
+---
+
+<BaseLayout title="NOTE">
+    <Layout
+        title="NOTE"
+        heroImage={AboutHeroImage}
+    >
+        <br/>
+        <p>Found a way in.</p>
+        <br/>
+        <p>One workstation is still exposed to the network. Old software, weak credentials, and a long history of poor security practices.</p>
+        <br/>
+        <p>It was never properly secured. Every time someone tried to fix it, something else was left behind.</p>
+        <br/>
+        <p>I managed to get access once, but couldn't stay connected long enough to follow the network any further.</p>
+        <br/>
+        <p>The workstation is still there.</p>
+        <br/>
+        <p>Find it.</p>
+        <br/>
+    </Layout>
+</BaseLayout>
+
+<script>
+    const music = new Audio("/clubbed-to-death.mp3");
+
+    document.body.addEventListener("mouseover", () => {
+		if (music.currentTime === 0) {
+			music.play();
+			music.loop = true;
+		}
+	});
+</script>
